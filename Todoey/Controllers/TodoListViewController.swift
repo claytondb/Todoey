@@ -9,31 +9,20 @@
 import UIKit
 
 class TodoListViewController: UITableViewController {
-
+// The way you're saving data is by encoding the array of data into a plist (property list) and then decoding it back into the array when the app is loaded.
+    
     var itemArray = [Item]()
     
 //    let defaults = UserDefaults.standard
+    
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let newItem = Item()
-        newItem.title = "Wash clothes"
-        itemArray.append(newItem)
+        print(dataFilePath)
         
-        let newItem2 = Item()
-        newItem2.title = "Wash clothes again"
-        itemArray.append(newItem2)
-        
-        let newItem3 = Item()
-        newItem3.title = "Cash me owtswide"
-        itemArray.append(newItem3)
-        
-//         if let items = defaults.array(forKey: "TodoListArray") as? [Item] {
-//            itemArray = items
-//         }
-        
+        loadItems()
 
     }
     
@@ -117,6 +106,8 @@ class TodoListViewController: UITableViewController {
         
     }
     
+    //MARK: Model manipulation methods
+    
     func saveItems(){
         let encoder = PropertyListEncoder()
         
@@ -128,6 +119,18 @@ class TodoListViewController: UITableViewController {
         }
         
         self.tableView.reloadData()
+    }
+    
+    func loadItems() {
+        if let data = try? Data(contentsOf: dataFilePath!) {
+            let decoder = PropertyListDecoder()
+            
+            do {
+            itemArray = try decoder.decode([Item].self, from: data)
+            } catch {
+                print("Error decoding item array. \(error)")
+            }
+        }
     }
     
 

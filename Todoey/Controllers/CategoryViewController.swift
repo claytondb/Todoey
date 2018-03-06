@@ -33,6 +33,18 @@ class CategoryViewController: UITableViewController {
         return categoryArray.count
     }
     
+    //MARK: Tableview delegate methods - what should happen when we click on one of the items in the tableview
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "goToItems", sender: self)
+    }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destinationVC = segue.destination as! TodoListViewController
+        if let indexPath = tableView.indexPathForSelectedRow {
+            destinationVC.selectedCategory = categoryArray[indexPath.row]
+        }
+    }
+    
+    
     //MARK: Data manipulation methods
     func saveCategories(){
         do {
@@ -47,7 +59,7 @@ class CategoryViewController: UITableViewController {
         do {
             categoryArray = try context.fetch(request)
         } catch {
-            print("Error reading from context. \(error)")
+            print("Error loading categories. \(error)")
         }
         tableView.reloadData()
     }
@@ -64,7 +76,7 @@ class CategoryViewController: UITableViewController {
             self.saveCategories()
         }
         alert.addTextField { (alertTextField) in
-            alertTextField.placeholder = "Be more awesome."
+            alertTextField.placeholder = "Grocery list"
             textField = alertTextField
         }
         alert.addAction(action)
@@ -73,7 +85,7 @@ class CategoryViewController: UITableViewController {
     
     
     
-    //MARK: Tableview delegate methods - what should happen when we click on one of the items in the tableview
+    
     
     
 }

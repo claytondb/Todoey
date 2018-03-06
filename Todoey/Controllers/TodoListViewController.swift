@@ -137,5 +137,18 @@ extension TodoListViewController : UISearchBarDelegate {
         
         loadItems(with: request)
     }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            // reload all the list items
+            loadItems()
+            
+            // this happens in the main thread, asynchronously, in the dispatch queue
+            DispatchQueue.main.async {
+                // search bar should no longer be the thing that is currently selected
+                searchBar.resignFirstResponder()
+            }
+        }
+    }
 }
 
